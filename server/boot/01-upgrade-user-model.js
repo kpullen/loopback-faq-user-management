@@ -1,4 +1,5 @@
-var path = require("path");
+var config = require('../config.json'),
+    path   = require("path");
 
 module.exports = function(app) {
   var User = app.models.User,
