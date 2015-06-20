@@ -1,9 +1,11 @@
-var config = require('../../server/config.json');
-var path = require('path');
+var path = require("path");
 
-module.exports = function(user) {
+module.exports = function(app) {
+  var User = app.models.User,
+      Email = app.models.Email;
+
   //send verification email after registration
-  user.afterRemote('create', function(context, user) {
+  User.afterRemote('create', function(context, user, next) {
     console.log('> user.afterRemote triggered');
 
     var options = {
@@ -17,7 +19,7 @@ module.exports = function(user) {
     };
 
     user.verify(options, function(err, response) {
-      if (err) {
+      if(err) {
         next(err);
         return;
       }
@@ -27,7 +29,7 @@ module.exports = function(user) {
       context.res.render('response', {
         title: 'Signed up successfully',
         content: 'Please check your email and click on the verification link '
-          + 'before logging in.',
+        + 'before logging in.',
         redirectTo: '/',
         redirectToLinkText: 'Log in'
       });
@@ -35,18 +37,18 @@ module.exports = function(user) {
   });
 
   //send password reset link when requested
-  user.on('resetPasswordRequest', function(info) {
+  User.on('resetPasswordRequest', function(info) {
     var url = 'http://' + config.host + ':' + config.port + '/reset-password';
     var html = 'Click <a href="' + url + '?access_token=' + info.accessToken.id
       + '">here</a> to reset your password';
 
-    user.app.models.Email.send({
+    Email.send({
       to: info.email,
       from: info.email,
       subject: 'Password reset',
       html: html
     }, function(err) {
-      if (err) return console.log('> error sending password reset email');
+      if(err) return console.log('> error sending password reset email');
       console.log('> sending password reset email to:', info.email);
     });
   });

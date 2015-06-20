@@ -9,7 +9,7 @@
   },
   "User": {
     "dataSource": "db",
-    "public": false
+    "public": true
   },
   "AccessToken": {
     "dataSource": "db",
@@ -29,12 +29,5 @@
   },
   "Email": {
     "dataSource": "emailDs"
-  },
-  "user": {
-    "dataSource": "db",
-    "public": true,
-    "options": {
-      "emailVerificationRequired": true
-    }
   }
 }
